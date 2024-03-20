@@ -7,7 +7,8 @@ var logger = require('morgan')
 // 加载路由
 var indexRouter = require('./routes/index')
 var usersRouter = require('./routes/users')
-
+var publishRouter = require('./routes/publish')
+var postsRouter = require('./routes/posts')
 // 创建express实例
 var app = express()
 
@@ -28,7 +29,8 @@ app.use(express.static(path.join(__dirname, 'public')))
 // 加载路由
 app.use('/', indexRouter)
 app.use('/users', usersRouter)
-
+app.use('/publish', publishRouter)
+app.use('/posts', postsRouter)
 // catch 404 and forward to error handler
 // 404
 // 捕获404并转发到错误处理程序
