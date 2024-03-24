@@ -3,12 +3,12 @@ const router = express.Router()
 const sql = require('../db/index')
 
 router.post('/', (req, res, next) => {
-  const { content, openid, tag } = req.body
+  const { content, openid, tag, createTime } = req.body
   try {
     // 将内容存储在数据库中，并包含openid
     sql.query(
-      'INSERT INTO posts (content, openid,tag) VALUES (?, ?,?)',
-      [content, openid, tag],
+      'INSERT INTO posts (content, openid,tag,createTime) VALUES (?, ?, ? ,?)',
+      [content, openid, tag, createTime],
       (error, results) => {
         if (error) {
           console.error('存入数据库失败:', error)

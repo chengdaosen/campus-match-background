@@ -9,6 +9,7 @@ var indexRouter = require('./routes/index')
 var usersRouter = require('./routes/users')
 var publishRouter = require('./routes/publish')
 var postsRouter = require('./routes/posts')
+var usersLikeRouter = require('./routes/usersLike')
 // 创建express实例
 var app = express()
 
@@ -31,6 +32,7 @@ app.use('/', indexRouter)
 app.use('/users', usersRouter)
 app.use('/publish', publishRouter)
 app.use('/posts', postsRouter)
+app.use('/usersLike', usersLikeRouter)
 // catch 404 and forward to error handler
 // 404
 // 捕获404并转发到错误处理程序

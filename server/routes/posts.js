@@ -2,8 +2,34 @@ const express = require('express')
 const router = express.Router()
 const sql = require('../db/index')
 
-router.get('/', (req, res, next) => {
+// GET请求，用于获取帖子列表
+router.get('/', async (req, res, next) => {
   try {
+    const results = await getPosts()
+    res.status(200).json(results)
+  } catch (error) {
+    console.error('Failed to retrieve posts:', error)
+    res.status(500).json({ message: 'Failed to retrieve posts' })
+  }
+})
+
+// POST请求，用于增加点赞数并更新like表中postId字段值
+router.post('/like', async (req, res, next) => {
+  const { postId, openId } = req.body
+
+  try {
+    await increaseLikes(postId)
+    await updateLikeTable(postId, openId)
+    res.status(200).json({ message: 'Like count increased successfully' })
+  } catch (error) {
+    console.error('Failed to increase like count:', error)
+    res.status(500).json({ message: 'Failed to increase like count' })
+  }
+})
+
+// 获取帖子列表的函数
+function getPosts() {
+  return new Promise((resolve, reject) => {
     sql.query(
       `SELECT posts.*, users.head_pic, users.username 
        FROM posts 
@@ -11,20 +37,50 @@ router.get('/', (req, res, next) => {
        COLLATE utf8mb4_unicode_ci`,
       (error, results) => {
         if (error) {
-          console.error('查询失败:', error)
-          res
-            .status(500)
-            .json({ message: 'Failed to retrieve posts with user information' })
+          reject(error)
         } else {
-          console.log('查询成功:', results)
-          res.status(200).json(results)
+          results.forEach((post) => {
+            post.createTime = new Date(post.createTime).toLocaleString()
+          })
+          resolve(results)
         }
       }
     )
-  } catch (error) {
-    console.error('Error creating post:', error)
-    next(error)
-  }
-})
+  })
+}
+
+// 增加点赞数的函数
+function increaseLikes(postId) {
+  return new Promise((resolve, reject) => {
+    sql.query(
+      `UPDATE posts SET likeTotal = likeTotal + 1 WHERE id = ?`,
+      [postId],
+      (error, results) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve()
+        }
+      }
+    )
+  })
+}
+
+// 更新like表中postId字段值的函数
+function updateLikeTable(postId, openId) {
+  return new Promise((resolve, reject) => {
+    sql.query(
+      `INSERT INTO \`like\` (postId,openId) VALUES (?,?) ON DUPLICATE KEY UPDATE postId = postId`,
+      [postId, openId],
+      (error, results) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve()
+        }
+      }
+    )
+  })
+}
 
 module.exports = router
