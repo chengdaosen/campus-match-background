@@ -17,9 +17,9 @@ router.post('/', async (req, res, next) => {
       },
     })
     const openid = wxResponse.data.openid
-
-    // 立即返回 openid 给前端
-    res.json({ openid })
+    console.log('openid', openid)
+    // 查询与该openid相关的喜欢项
+    const usersLikes = await getLikedPosts(openid)
 
     // 检查数据库中是否已存在相同openid的用户
     const userExists = await checkIfUserExists(openid)
@@ -27,20 +27,14 @@ router.post('/', async (req, res, next) => {
     if (userExists) {
       // 用户已存在，返回消息
       console.log('用户已存在')
+      const userInfo = await getUserInfo(openid)
+      res.json({ openid, usersLikes, ...userInfo })
     } else {
       // 用户不存在，将用户信息插入数据库
       console.log('1111', openid, username, headPic)
-      sql.query(
-        'INSERT INTO users (openId, username, head_pic) VALUES (?, ?, ?)',
-        [openid, username, headPic],
-        (error, results) => {
-          if (error) {
-            console.error('存入数据库失败:', error)
-          } else {
-            console.log('数据存储成功')
-          }
-        }
-      )
+      await insertUserInfo(openid, username, headPic)
+      // 返回openid和喜欢的帖子数组给前端
+      res.json({ openid, usersLikes })
     }
   } catch (error) {
     console.error('获取 openid 失败:', error)
@@ -48,7 +42,7 @@ router.post('/', async (req, res, next) => {
   }
 })
 
-// 辅助函数：检查数据库中是否已存在相同openid的用户
+// 检查数据库中是否已存在相同openid的用户
 async function checkIfUserExists(openid) {
   return new Promise((resolve, reject) => {
     sql.query('SELECT * FROM users WHERE openId = ?', [openid], (error, results) => {
@@ -58,6 +52,60 @@ async function checkIfUserExists(openid) {
         resolve(results.length > 0)
       }
     })
+  })
+}
+
+// 查询用户信息
+async function getUserInfo(openid) {
+  return new Promise((resolve, reject) => {
+    sql.query(
+      'SELECT username, head_pic FROM users WHERE openId = ?',
+      [openid],
+      (error, results) => {
+        if (error) {
+          reject(error)
+        } else {
+          console.log('用户信息:', results[0])
+          const { username, head_pic } = results[0]
+          resolve({ username, head_pic })
+        }
+      }
+    )
+  })
+}
+
+// 插入用户信息
+async function insertUserInfo(openid, username, headPic) {
+  return new Promise((resolve, reject) => {
+    sql.query(
+      'INSERT INTO users (openId, username, head_pic) VALUES (?, ?, ?)',
+      [openid, username, headPic],
+      (error, results) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve()
+        }
+      }
+    )
+  })
+}
+
+// 查询与给定openid相关的喜欢项的postId值组成的数组
+async function getLikedPosts(openid) {
+  return new Promise((resolve, reject) => {
+    sql.query(
+      'SELECT postId FROM likes WHERE user_like_id = ?',
+      [openid],
+      (error, results) => {
+        if (error) {
+          reject(error)
+        } else {
+          const postIdArray = results.map((result) => result.postId)
+          resolve(postIdArray)
+        }
+      }
+    )
   })
 }
 
