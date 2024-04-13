@@ -1,169 +1,131 @@
 <template>
-  <el-row class="login-container">
-    <!--响应式布局 宽屏占16:8 中屏占12:12-->
-    <el-col :lg="16" :md="12" class="left">
-      <div>
-        <div>欢迎光临</div>
-        <div>这里是--------------------------</div>
-      </div>
-    </el-col>
-    <el-col :lg="8" :md="12" class="right">
-      <h2 class="title">欢迎回来</h2>
-      <div>
-        <span class="line"></span>
-        <span>账号密码登录</span>
-        <span class="line"></span>
-      </div>
-      <!--登录表单部分-->
-      <el-form ref="formRef" :rules="rules" :model="form" class="w-[250px]">
+  <div class="login-wrap">
+    <div class="ms-login">
+      <div class="ms-title">校园拼伴后台管理系统</div>
+      <el-form :model="param" :rules="rules" ref="login" class="ms-content">
         <el-form-item prop="username">
-          <el-input v-model="form.username" placeholder="请输入用户名">
-            <template #prefix>
-              <el-icon><user /></el-icon>
+          <el-input v-model="param.username" placeholder="username">
+            <template #prepend>
+              <el-icon>
+                <User />
+              </el-icon>
             </template>
           </el-input>
         </el-form-item>
         <el-form-item prop="password">
           <el-input
             type="password"
-            v-model="form.password"
-            placeholder="请输入密码"
-            show-password
+            placeholder="password"
+            v-model="param.password"
+            @keyup.enter="submitForm(login)"
           >
-            <template #prefix>
-              <el-icon><lock /></el-icon>
+            <template #prepend>
+              <el-icon>
+                <Lock />
+              </el-icon>
             </template>
           </el-input>
         </el-form-item>
-        <el-form-item>
-          <el-button
-            round
-            color="#626aef"
-            class="w-[250px]"
-            type="primary"
-            @click="onSubmit"
-            :loading="loading"
-            >登 录</el-button
-          >
-        </el-form-item>
+        <div class="login-btn">
+          <el-button type="primary" @click="submitForm(login)">登录</el-button>
+        </div>
+        <el-checkbox class="login-tips" v-model="checked" label="记住密码" size="large" />
       </el-form>
-    </el-col>
-  </el-row>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onBeforeUnmount } from 'vue'
+import { ref, reactive } from 'vue'
+import { useTagsStore } from '../store/tags'
+import { usePermissStore } from '../store/permiss'
 import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
+import { adminLogin } from '../api/login'
+//如果用户选择记住密码则自动回显账号和密码
+const lgStr = localStorage.getItem('login-param')
+const defParam = lgStr ? JSON.parse(lgStr) : null
+const checked = ref(lgStr ? true : false)
 
-// do not use same name with ref
-const form = reactive({
-  username: '',
-  password: '',
+const router = useRouter()
+const param = reactive({
+  username: defParam ? defParam.username : '',
+  password: defParam ? defParam.password : '',
 })
 
-// 验证规则
 const rules = {
   username: [
     {
       required: true,
-      message: '用户名不能为空',
+      message: '请输入用户名',
       trigger: 'blur',
     },
   ],
-  password: [
-    {
-      required: true,
-      message: '用户名不能为空',
-      trigger: 'blur',
-    },
-  ],
+  password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
 }
-
-const formRef = ref(null)
-const loading = ref(false)
-// const onSubmit = () => {
-//   formRef.value.validate((valid) => {
-//     if (!valid) {
-//       return false
-//     }
-//     loading.value = true
-
-//     store
-//       .dispatch('login', form)
-//       .then((res) => {
-//         toast('登录成功')
-//         // 登录成功路由跳转到首页
-//         router.push('/')
-//       })
-//       .finally(() => {
-//         loading.value = false
-//       })
-//   })
-// }
-
-// 监听回车事件
-function onKeyUp(e) {
-  // 按下回车提交表单
-  if (e.key === 'Enter') onSubmit()
+const permiss = usePermissStore()
+const login = ref()
+const submitForm = (formEl) => {
+  if (!formEl) return
+  formEl.validate(async (valid) => {
+    if (valid) {
+      const res = await adminLogin(param)
+      console.log('res', res)
+      const { status } = res
+      if (status === 200) {
+        ElMessage.success(res.data.message)
+        localStorage.setItem('token', res.data.token)
+        router.push('/dashboard') // 登录成功后跳转到首页
+      } else {
+        // 登录失败
+        ElMessage.error(res.data.message)
+      }
+    } else {
+      ElMessage.error('请按规则填写表单')
+    }
+  })
 }
-
-// 添加键盘监听
-onMounted(() => {
-  document.addEventListener('keyup', onKeyUp)
-})
-// 移除键盘监听
-onBeforeUnmount(() => {
-  document.removeEventListener('keyup', onKeyUp)
-})
+const tags = useTagsStore()
+tags.clearTags()
 </script>
 
-<style scoped lang="scss">
-.login-container {
-  background-color: #3f51b5;
-  height: 100vh;
-}
-.login-container .left,
-.login-container .right {
+<style scoped>
+.login-wrap {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-image: url(../assets/img/锦江.jpg);
+  background-size: 100%;
 }
-
-.login-container .right {
-  background-color: #f8f9fa;
-  flex-direction: column;
-}
-
-.left > div > div:first-child {
+.ms-title {
+  line-height: 50px;
+  text-align: center;
+  font-size: 20px;
+  color: #333;
   font-weight: bold;
-  font-size: 5xl;
-  color: #f8f9fa;
-  margin-bottom: 4px;
+  padding-top: 10px;
 }
-
-.left > div > div:last-child {
-  color: #718096;
-  font-size: small;
+.ms-login {
+  width: 350px;
+  border-radius: 5px;
+  background: #fff;
 }
-
-.right .title {
-  font-weight: bold;
-  font-size: 3xl;
-  color: #1a202c;
+.ms-content {
+  padding: 10px 30px 30px;
 }
-
-.right > div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 5rem;
-  color: #a0aec0;
-  gap: 0.5rem;
+.login-btn {
+  text-align: center;
 }
-
-.right .line {
-  height: 1px;
-  width: 16rem;
-  background-color: #cbd5e0;
+.login-btn button {
+  width: 100%;
+  height: 36px;
+  margin-bottom: 10px;
+}
+.login-tips {
+  font-size: 12px;
+  line-height: 30px;
+  color: #333;
 }
 </style>

@@ -59,15 +59,15 @@ async function checkIfUserExists(openid) {
 async function getUserInfo(openid) {
   return new Promise((resolve, reject) => {
     sql.query(
-      'SELECT username, head_pic FROM users WHERE openId = ?',
+      'SELECT username, head_pic , sex ,wechat ,qq FROM users WHERE openId = ?',
       [openid],
       (error, results) => {
         if (error) {
           reject(error)
         } else {
           console.log('用户信息:', results[0])
-          const { username, head_pic } = results[0]
-          resolve({ username, head_pic })
+          const { username, head_pic, sex, wechat, qq } = results[0]
+          resolve({ username, head_pic, sex, wechat, qq })
         }
       }
     )

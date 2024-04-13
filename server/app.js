@@ -3,7 +3,7 @@ var express = require('express')
 var path = require('path')
 var cookieParser = require('cookie-parser')
 var logger = require('morgan')
-
+var cors = require('cors')
 // 加载路由
 var indexRouter = require('./routes/index')
 var usersRouter = require('./routes/users')
@@ -11,6 +11,8 @@ var publishRouter = require('./routes/publish')
 var postsRouter = require('./routes/posts')
 var usersLikeRouter = require('./routes/usersLike')
 var avatarUrlRouter = require('./routes/avatarUrl')
+var adminRouter = require('./routes/admin')
+var updateInfoRouter = require('./routes/updateInfo')
 // 创建express实例
 var app = express()
 
@@ -26,7 +28,12 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
-
+app.use(
+  cors({
+    origin: 'http://localhost:5173', // 允许指定的域名发送跨域请求
+    // origin: '*' // 允许所有域发送跨域请求
+  })
+)
 // 路由
 // 加载路由
 app.use('/', indexRouter)
@@ -35,6 +42,8 @@ app.use('/publish', publishRouter)
 app.use('/posts', postsRouter)
 app.use('/usersLike', usersLikeRouter)
 app.use('/avatarUrl', avatarUrlRouter)
+app.use('/admin', adminRouter)
+app.use('/updateInfo', updateInfoRouter)
 // catch 404 and forward to error handler
 // 404
 // 捕获404并转发到错误处理程序

@@ -18,7 +18,7 @@ router.post('/', upload.single('file'), (req, res) => {
   const openid = req.body.openid
   const avatarUrl = 'http://localhost:3000/upload/' + req.file.filename
   // 创建MySQL查询
-  const sqlStr = 'SELECT * FROM users WHERE openid = ?'
+  const sqlStr = 'SELECT * FROM users WHERE openId = ?'
 
   // 查询数据库
   sql.query(sqlStr, [openid], function (err, result) {
@@ -38,12 +38,4 @@ router.post('/', upload.single('file'), (req, res) => {
     }
   })
 })
-// 获取图片并返回给前端
-// router.get('/:filename', (req, res) => {
-//   const filename = req.params.filename
-//   // 拼接图片文件路径
-//   const imagePath = path.join(__dirname, '../public/upload/', filename)
-//   // 发送图片
-//   res.sendFile(imagePath)
-// })
 module.exports = router
