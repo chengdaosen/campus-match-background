@@ -36,7 +36,6 @@ router.post('/like', async (req, res, next) => {
 function getPosts(commentTypeIndex, openId, keyword) {
   return new Promise((resolve, reject) => {
     let queryParams = []
-
     let orderByClause = ''
     if (commentTypeIndex == 1) {
       orderByClause = ' ORDER BY posts.createTime DESC'
@@ -44,27 +43,55 @@ function getPosts(commentTypeIndex, openId, keyword) {
       orderByClause = ' ORDER BY posts.likeTotal DESC'
     }
 
-    let queryStr = `SELECT posts.*, users.head_pic, users.username 
+    let queryStr = `SELECT posts.*, users.head_pic, users.username
                     FROM posts 
                     JOIN users ON users.openId = posts.openId`
 
-    if (openId) {
-      queryStr += ` LEFT JOIN likes ON posts.id = likes.postId AND likes.user_like_id = ?`
-      queryParams.push(openId)
+    // 如果有关键字，添加 WHERE 子句
+    if (keyword) {
+      queryStr += ` WHERE content LIKE ?`
+      queryParams.push(`%${keyword}%`)
     }
 
+    // 添加排序子句
     queryStr += orderByClause
 
+    // 查询喜欢的帖子的 postId
+    let likePostIds = []
+
+    // 执行查询
     sql.query(queryStr, queryParams, (error, results) => {
-      console.log('queryStr', queryStr)
       if (error) {
         reject(error)
       } else {
-        results.forEach((post) => {
-          post.createTime = new Date(post.createTime).toLocaleString()
-          post.likeStatus = post.user_like_id ? 1 : 0 // 根据是否有点赞来设置likeStatus字段
-        })
-        resolve(results)
+        if (openId) {
+          let likeQuery = `SELECT postId FROM likes WHERE user_like_id = ?`
+          sql.query(likeQuery, [openId], (likeError, likeResults) => {
+            if (likeError) {
+              reject(likeError)
+            } else {
+              likeResults.forEach((like) => {
+                likePostIds.push(like.postId)
+              })
+
+              results.forEach((post) => {
+                post.createTime = new Date(post.createTime).toLocaleString()
+                if (likePostIds.includes(post.id)) {
+                  post.likeStatus = 1
+                } else {
+                  post.likeStatus = 0
+                }
+              })
+
+              resolve(results)
+            }
+          })
+        } else {
+          results.forEach((post) => {
+            post.createTime = new Date(post.createTime).toLocaleString()
+          })
+          resolve(results)
+        }
       }
     })
   })
