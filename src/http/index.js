@@ -5,7 +5,8 @@ import { ElLoading, ElMessage } from 'element-plus'
 
 // 创建 axios 的一个实例
 const instance = axios.create({
-  baseURL: import.meta.env.VITE_APP_URL, // 接口统一域名
+  // baseURL: import.meta.env.VITE_APP_URL, // 接口统一域名
+  baseURL: 'http://localhost:3000', // 接口统一域名
   timeout: 6000, // 设置超时
   headers: {
     // 'Content-Type': 'application/x-www-form-urlencoded', // 传参方式表单

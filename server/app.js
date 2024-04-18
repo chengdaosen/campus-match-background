@@ -14,6 +14,10 @@ var avatarUrlRouter = require('./routes/avatarUrl')
 var adminRouter = require('./routes/admin')
 var updateInfoRouter = require('./routes/updateInfo')
 var tagsRouter = require('./routes/tags')
+var personalRouter = require('./routes/personal')
+var deletePostRouter = require('./routes/deletePost')
+var allUsersRouter = require('./routes/allUsers')
+var complainRouter = require('./routes/complain')
 // 创建express实例
 var app = express()
 
@@ -46,6 +50,10 @@ app.use('/avatarUrl', avatarUrlRouter)
 app.use('/admin', adminRouter)
 app.use('/updateInfo', updateInfoRouter)
 app.use('/tags', tagsRouter)
+app.use('/personal', personalRouter)
+app.use('/delete', deletePostRouter)
+app.use('/allUsers', allUsersRouter)
+app.use('/complain', complainRouter)
 // catch 404 and forward to error handler
 // 404
 // 捕获404并转发到错误处理程序

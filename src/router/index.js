@@ -30,6 +30,22 @@ const routes = [
         },
         component: () => import('@/pages/user.vue'),
       },
+      {
+        path: '/userManage',
+        name: 'userManange',
+        meta: {
+          title: '用户管理',
+        },
+        component: () => import('@/pages/userManage.vue'),
+      },
+      {
+        path: '/post',
+        name: 'post',
+        meta: {
+          title: '帖子管理',
+        },
+        component: () => import('@/pages/post.vue'),
+      },
     ],
   },
   {

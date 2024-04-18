@@ -68,7 +68,7 @@ const items = [
   },
   {
     icon: 'User',
-    index: '/tabs',
+    index: '/userManage',
     title: '用户管理',
     permiss: '2',
   },
@@ -76,6 +76,12 @@ const items = [
     icon: 'Warning',
     index: '3',
     title: '举报管理',
+    permiss: '3',
+  },
+  {
+    icon: 'Tickets',
+    index: '/post',
+    title: '帖子管理',
     permiss: '3',
   },
 ]

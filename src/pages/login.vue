@@ -38,7 +38,6 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import { useTagsStore } from '../store/tags'
-import { usePermissStore } from '../store/permiss'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { adminLogin } from '../api/login'
@@ -63,7 +62,6 @@ const rules = {
   ],
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
 }
-const permiss = usePermissStore()
 const login = ref()
 const submitForm = (formEl) => {
   if (!formEl) return
@@ -74,6 +72,7 @@ const submitForm = (formEl) => {
       const { status } = res
       if (status === 200) {
         ElMessage.success(res.data.message)
+        localStorage.setItem('ms_username', param.username)
         localStorage.setItem('token', res.data.token)
         router.push('/dashboard') // 登录成功后跳转到首页
       } else {

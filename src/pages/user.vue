@@ -78,7 +78,7 @@
 import { reactive, ref } from 'vue'
 import avatar from '../assets/img/img.jpg'
 
-const name = localStorage.getItem('ms_username')
+const name = localStorage.getItem('token')
 const form = reactive({
   old: '',
   new: '',

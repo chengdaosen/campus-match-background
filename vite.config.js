@@ -13,7 +13,8 @@ export default defineConfig({
     proxy: {
       // 使用/api代理域名
       '/api': {
-        target: import.meta.env.VITE_APP_URL,
+        // target: import.meta.env.VITE_APP_URL,
+        target: 'http://localhost:3000',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },

@@ -3,6 +3,7 @@ const router = express.Router()
 const sql = require('../db/index')
 const path = require('path')
 const multer = require('multer')
+
 // 设置文件上传的目录
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -14,9 +15,15 @@ const storage = multer.diskStorage({
 })
 
 const upload = multer({ storage: storage })
+
 router.post('/', upload.single('file'), (req, res) => {
   const openid = req.body.openid
   const avatarUrl = 'http://localhost:3000/upload/' + req.file.filename
+
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173') // 允许跨域请求的源
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE') // 允许跨域请求的方法
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization') // 允许跨域请求的头部
+
   // 创建MySQL查询
   const sqlStr = 'SELECT * FROM users WHERE openId = ?'
 
@@ -38,4 +45,5 @@ router.post('/', upload.single('file'), (req, res) => {
     }
   })
 })
+
 module.exports = router
