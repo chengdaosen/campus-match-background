@@ -18,6 +18,9 @@ var personalRouter = require('./routes/personal')
 var deletePostRouter = require('./routes/deletePost')
 var allUsersRouter = require('./routes/allUsers')
 var complainRouter = require('./routes/complain')
+var uploadRouter = require('./routes/upload')
+var commentRouter = require('./routes/comment')
+var myCommentRouter = require('./routes/myComment')
 // 创建express实例
 var app = express()
 
@@ -28,15 +31,17 @@ app.set('view engine', 'jade')
 
 // 中间件
 // 设置中间件
+app.use(require('cors')())
 app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
-app.use(express.static(path.join(__dirname, 'public')))
+app.use('/upload', express.static(__dirname + '/upload'))
+// app.use(express.static(path.join(__dirname, 'public')))
 app.use(
   cors({
-    origin: 'http://localhost:5173', // 允许指定的域名发送跨域请求
-    // origin: '*' // 允许所有域发送跨域请求
+    // origin: 'http://localhost:5173', // 允许指定的域名发送跨域请求
+    origin: '*', // 允许所有域发送跨域请求
   })
 )
 // 路由
@@ -54,6 +59,9 @@ app.use('/personal', personalRouter)
 app.use('/delete', deletePostRouter)
 app.use('/allUsers', allUsersRouter)
 app.use('/complain', complainRouter)
+app.use('/upload', uploadRouter)
+app.use('/comment', commentRouter)
+app.use('/myComment', myCommentRouter)
 // catch 404 and forward to error handler
 // 404
 // 捕获404并转发到错误处理程序

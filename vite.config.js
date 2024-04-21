@@ -9,16 +9,16 @@ export default defineConfig({
     },
   },
 
-  server: {
-    proxy: {
-      // 使用/api代理域名
-      '/api': {
-        // target: import.meta.env.VITE_APP_URL,
-        target: 'http://localhost:3000',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
-      },
-    },
-  },
+  // server: {
+  //   proxy: {
+  //     // 使用/api代理域名
+  //     '/api': {
+  //       target: process.env.VITE_APP_URL,
+  //       // target: 'http://127.0.0.1:3000',
+  //       changeOrigin: true,
+  //       rewrite: (path) => path.replace(/^\/api/, ''),
+  //     },
+  //   },
+  // },
   plugins: [vue()],
 })

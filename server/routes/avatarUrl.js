@@ -17,26 +17,25 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage })
 
 router.post('/', upload.single('file'), (req, res) => {
+  // 设置允许跨域请求的源为 http://localhost:5173
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173')
+
   const openid = req.body.openid
   const avatarUrl = 'http://localhost:3000/upload/' + req.file.filename
 
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173') // 允许跨域请求的源
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE') // 允许跨域请求的方法
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization') // 允许跨域请求的头部
-
-  // 创建MySQL查询
-  const sqlStr = 'SELECT * FROM users WHERE openId = ?'
+  // 创建 MySQL 查询
+  const selectSqlStr = 'SELECT * FROM users WHERE openId = ?'
 
   // 查询数据库
-  sql.query(sqlStr, [openid], function (err, result) {
+  sql.query(selectSqlStr, [openid], function (err, result) {
     if (err) {
       console.error(err)
       res.status(500).send('Database error')
     } else {
-      // 检查是否有匹配的openId
+      // 检查是否有匹配的 openId
       if (result.length > 0) {
-        const sqlStr = `UPDATE users SET head_pic = '${avatarUrl}' WHERE openId = '${openid}'`
-        sql.query(sqlStr, (err, result) => {
+        const updateSqlStr = `UPDATE users SET head_pic = '${avatarUrl}' WHERE openId = '${openid}'`
+        sql.query(updateSqlStr, (err, result) => {
           if (err) throw err
           res.json({ avatarUrl })
         })
@@ -44,6 +43,19 @@ router.post('/', upload.single('file'), (req, res) => {
       }
     }
   })
+})
+// 定义路由处理函数
+router.get('/:filename', (req, res) => {
+  // 获取请求中的文件名参数
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  console.log('55555555555555')
+  const filename = req.params.filename
+
+  // 拼接文件的完整路径
+  const filePath = path.join(__dirname, '../public/upload/', filename)
+
+  // 使用 Express 的 sendFile 方法发送文件
+  res.sendFile(filePath)
 })
 
 module.exports = router

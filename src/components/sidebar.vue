@@ -74,7 +74,7 @@ const items = [
   },
   {
     icon: 'Warning',
-    index: '3',
+    index: '/complain',
     title: '举报管理',
     permiss: '3',
   },
@@ -82,7 +82,7 @@ const items = [
     icon: 'Tickets',
     index: '/post',
     title: '帖子管理',
-    permiss: '3',
+    permiss: '4',
   },
 ]
 

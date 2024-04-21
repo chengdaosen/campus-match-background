@@ -39,6 +39,14 @@ const routes = [
         component: () => import('@/pages/userManage.vue'),
       },
       {
+        path: '/complain',
+        name: 'complain',
+        meta: {
+          title: '举报管理',
+        },
+        component: () => import('@/pages/complain.vue'),
+      },
+      {
         path: '/post',
         name: 'post',
         meta: {

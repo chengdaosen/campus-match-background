@@ -1,17 +1,18 @@
 const express = require('express')
 const router = express.Router()
 const sql = require('../db/index')
+
 router.post('/', async (req, res, next) => {
   const { postId } = req.body
-  console.log('111', postId)
+  console.log('postId:', postId)
+
   try {
-    // 执行数据库删除操作
     const result = await deleteUserPost(postId)
-    console.log('Result:', result) // 等待删除结果
+    console.log('Delete result:', result)
     res.status(200).json({ message: 'Post deleted successfully' })
   } catch (error) {
     console.error('Error deleting user post:', error)
-    res.status(500).json({ message: 'Internal server error' })
+    next(error) // 将错误传递给全局错误处理程序
   }
 })
 
@@ -31,4 +32,5 @@ async function deleteUserPost(postId) {
     throw error
   }
 }
+
 module.exports = router

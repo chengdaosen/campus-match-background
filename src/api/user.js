@@ -1,7 +1,7 @@
-import axios from '../http/request'
+import request from '../http/request'
 
 export const getUsers = (params = {}) => {
-  return axios({
+  return request({
     url: '/allUsers',
     method: 'post',
     data: params,
