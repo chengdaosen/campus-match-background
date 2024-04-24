@@ -43,9 +43,11 @@
         </template>
         <template v-else>
           <el-menu-item :index="item.index" :key="item.index" v-permiss="item.permiss">
-            <el-icon>
-              <component :is="item.icon"></component>
-            </el-icon>
+            <div>
+              <el-icon>
+                <component :is="item.icon"></component>
+              </el-icon>
+            </div>
             <template #title>{{ item.title }}</template>
           </el-menu-item>
         </template>
@@ -83,6 +85,12 @@ const items = [
     index: '/post',
     title: '帖子管理',
     permiss: '4',
+  },
+  {
+    icon: 'Bell',
+    index: '/notice',
+    title: '公告管理',
+    permiss: '5',
   },
 ]
 

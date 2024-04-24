@@ -4,7 +4,7 @@
       <el-col :span="8">
         <el-card shadow="hover" class="mgb20" style="height: 252px">
           <div class="user-info">
-            <!-- <el-avatar :size="120" :src="imgurl" /> -->
+            <el-avatar :size="120" :src="imgurl" />
             <div class="user-info-cont">
               <div class="user-info-name">{{ name }}</div>
               <div>{{ role }}</div>
@@ -12,11 +12,11 @@
           </div>
           <div class="user-info-list">
             上次登录时间：
-            <span>2022-10-01</span>
+            <span>2024-4-24</span>
           </div>
           <div class="user-info-list">
             上次登录地点：
-            <span>东莞</span>
+            <span>眉山</span>
           </div>
         </el-card>
         <el-card shadow="hover" style="height: 252px">
@@ -120,6 +120,7 @@
 // import Schart from 'vue-schart'
 import { reactive } from 'vue'
 // import imgurl from '../assets/img/img.jpg'
+import imgurl from '../assets/img/img.jpg'
 
 const name = localStorage.getItem('ms_username')
 const role = name === 'admin' ? '超级管理员' : '普通用户'

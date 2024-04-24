@@ -54,6 +54,14 @@ const routes = [
         },
         component: () => import('@/pages/post.vue'),
       },
+      {
+        path: '/notice',
+        name: 'notice',
+        meta: {
+          title: '公告管理',
+        },
+        component: () => import('@/pages/notice.vue'),
+      },
     ],
   },
   {

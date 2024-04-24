@@ -16,7 +16,28 @@ router.post('/', async (req, res, next) => {
     res.status(500).json({ message: 'Internal server error' })
   }
 })
+// 添加 POST 请求，用于添加h回复
+router.post('/reply', async (req, res, next) => {
+  const { postId, openId, username, text, reply_id, parent_id, reply_name } = req.body
 
+  try {
+    // 执行数据库查询
+    const result = await addReplayComment(
+      postId,
+      openId,
+      username,
+      text,
+      reply_id,
+      parent_id,
+      reply_name
+    )
+    console.log('Result:', result) // 等待查询结果
+    res.status(200).json(result)
+  } catch (error) {
+    console.error('Error adding comment:', error)
+    res.status(500).json({ message: 'Internal server error' })
+  }
+})
 // 添加 GET 请求，用于获取所有评论
 router.get('/', async (req, res, next) => {
   try {
@@ -30,6 +51,29 @@ router.get('/', async (req, res, next) => {
   }
 })
 
+async function addReplayComment(
+  postId,
+  openId,
+  username,
+  text,
+  reply_id,
+  parent_id,
+  reply_name
+) {
+  return new Promise((resolve, reject) => {
+    const query =
+      'INSERT INTO comment (postId, openId, username, text, reply_id, parent_id, reply_name) VALUES (?, ?, ?, ?, ?, ?, ?)'
+    const values = [postId, openId, username, text, reply_id, parent_id, reply_name]
+
+    sql.query(query, values, (error, results) => {
+      if (error) {
+        reject(error) // 如果查询出错，返回错误信息
+      } else {
+        resolve(results) // 如果查询成功，返回查询结果
+      }
+    })
+  })
+}
 async function addComment(postId, openId, username, text) {
   return new Promise((resolve, reject) => {
     const query =

@@ -48,7 +48,6 @@ router.post('/', upload.single('file'), (req, res) => {
 router.get('/:filename', (req, res) => {
   // 获取请求中的文件名参数
   res.setHeader('Access-Control-Allow-Origin', '*')
-  console.log('55555555555555')
   const filename = req.params.filename
 
   // 拼接文件的完整路径
