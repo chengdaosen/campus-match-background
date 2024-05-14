@@ -14,7 +14,7 @@
           <el-input
             type="textarea"
             placeholder="请输入公告内容"
-            :rows="2"
+            :rows="4"
             v-model="form.content"
             autocomplete="off"
           />
@@ -84,6 +84,7 @@ const addNotice = () => {
   })
   dialogFormVisible.value = false
   console.log('添加公告')
+  this.form.content = ''
 }
 const handleClick = (id) => {
   const params = {

@@ -24,6 +24,7 @@ var myCommentRouter = require('./routes/myComment')
 var newsRouter = require('./routes/news')
 var detailRouter = require('./routes/detail')
 var noticeRouter = require('./routes/notice')
+var blacklistRouter = require('./routes/blacklist')
 // 创建express实例
 var app = express()
 
@@ -68,6 +69,7 @@ app.use('/myComment', myCommentRouter)
 app.use('/news', newsRouter)
 app.use('/detail', detailRouter)
 app.use('/notice', noticeRouter)
+app.use('/blacklist', blacklistRouter)
 // catch 404 and forward to error handler
 // 404
 // 捕获404并转发到错误处理程序

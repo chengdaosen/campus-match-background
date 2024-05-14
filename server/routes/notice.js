@@ -42,6 +42,15 @@ router.get('/', async (req, res, next) => {
     res.status(500).json({ message: 'Failed to fetch notices' })
   }
 })
+router.post('/submit', async (req, res, next) => {
+  try {
+    const results = await getPublishedNotices()
+    res.status(200).json(results)
+  } catch (error) {
+    console.error('Failed to fetch published notices:', error)
+    res.status(500).json({ message: 'Failed to fetch published notices' })
+  }
+})
 
 async function addNotice(content, username, createTime) {
   return new Promise((resolve, reject) => {
@@ -101,4 +110,15 @@ async function getAllNotices() {
   })
 }
 
+async function getPublishedNotices() {
+  return new Promise((resolve, reject) => {
+    sql.query('SELECT * FROM notice WHERE submit = 1', (error, results) => {
+      if (error) {
+        reject(error)
+      } else {
+        resolve(results)
+      }
+    })
+  })
+}
 module.exports = router

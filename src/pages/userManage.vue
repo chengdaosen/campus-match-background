@@ -32,12 +32,12 @@
     <el-table-column prop="wechat" width="100" label="微信" />
     <el-table-column prop="qq" width="100" label="QQ" />
     <el-table-column prop="openId" label="openId" />
+    <el-table-column prop="total" label="违规次数" />
     <el-table-column fixed="right" label="操作">
-      <template #default>
-        <el-button link type="primary" size="small" @click="handleClick"
+      <template #default="scope">
+        <el-button link type="primary" size="small" @click="handleClick(scope.row)"
           >加入黑名单</el-button
         >
-        <el-button link type="primary" size="small">Edit</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -46,15 +46,24 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { getUsers } from '../api/user'
+import { setBlacklist } from '../api/blacklist'
 
 const tableData = ref([])
-const handleClick = () => {
-  console.log('click')
+const handleClick = (row) => {
+  const params = {
+    username: row.username,
+    head_pic: row.head_pic,
+    openId: row.openId,
+    total: row.total,
+  }
+  setBlacklist(params).then((res) => {
+    console.log(res)
+  })
 }
 const getPostInfo = () => {
   getUsers()
     .then((res) => {
-      tableData.value.push(...res.data)
+      tableData.value = res.data
     })
     .catch((error) => {
       console.error('Error fetching post:', error)

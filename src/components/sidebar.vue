@@ -92,6 +92,12 @@ const items = [
     title: '公告管理',
     permiss: '5',
   },
+  {
+    icon: 'Stamp',
+    index: '/blacklist',
+    title: '黑名单管理',
+    permiss: '6',
+  },
 ]
 
 const route = useRoute()

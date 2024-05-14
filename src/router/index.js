@@ -32,7 +32,7 @@ const routes = [
       },
       {
         path: '/userManage',
-        name: 'userManange',
+        name: 'userManage',
         meta: {
           title: '用户管理',
         },
@@ -61,6 +61,14 @@ const routes = [
           title: '公告管理',
         },
         component: () => import('@/pages/notice.vue'),
+      },
+      {
+        path: '/blacklist',
+        name: 'blacklist',
+        meta: {
+          title: '黑名单管理',
+        },
+        component: () => import('@/pages/blacklist.vue'),
       },
     ],
   },

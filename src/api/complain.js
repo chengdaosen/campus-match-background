@@ -14,3 +14,24 @@ export const deleteComplain = (params = {}) => {
     data: params,
   })
 }
+export const deletePost = (params = {}) => {
+  return request({
+    url: '/complain/delete',
+    method: 'delete',
+    data: params,
+  })
+}
+export const recordTotal = (params = {}) => {
+  return request({
+    url: '/complain',
+    method: 'post',
+    data: params,
+  })
+}
+export const addRepotedTotal = (params = {}) => {
+  return request({
+    url: '/complain/add',
+    method: 'post',
+    data: params,
+  })
+}

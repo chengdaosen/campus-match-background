@@ -27,7 +27,7 @@
           </template>
           Vue
           <el-progress :percentage="79.4" color="#42b983"></el-progress>
-          TypeScript
+          JavaScript
           <el-progress :percentage="14" color="#f1e05a"></el-progress>
           CSS
           <el-progress :percentage="5.6"></el-progress>
@@ -38,34 +38,46 @@
       <el-col :span="16">
         <el-row :gutter="20" class="mgb20">
           <el-col :span="8">
-            <el-card shadow="hover" :body-style="{ padding: '0px' }">
+            <el-card
+              @click="navigateTo('userManage')"
+              shadow="hover"
+              :body-style="{ padding: '0px' }"
+            >
               <div class="grid-content grid-con-1">
                 <el-icon class="grid-con-icon"><User /></el-icon>
                 <div class="grid-cont-right">
-                  <div class="grid-num">1234</div>
-                  <div>用户访问量</div>
+                  <div class="grid-num">5</div>
+                  <div>用户数量</div>
                 </div>
               </div>
             </el-card>
           </el-col>
           <el-col :span="8">
-            <el-card shadow="hover" :body-style="{ padding: '0px' }">
+            <el-card
+              @click="navigateTo('blacklist')"
+              shadow="hover"
+              :body-style="{ padding: '0px' }"
+            >
               <div class="grid-content grid-con-2">
-                <el-icon class="grid-con-icon"><ChatDotRound /></el-icon>
+                <el-icon class="grid-con-icon"><UserFilled /></el-icon>
                 <div class="grid-cont-right">
-                  <div class="grid-num">321</div>
-                  <div>系统消息</div>
+                  <div class="grid-num">1</div>
+                  <div>黑名单数量</div>
                 </div>
               </div>
             </el-card>
           </el-col>
           <el-col :span="8">
-            <el-card shadow="hover" :body-style="{ padding: '0px' }">
+            <el-card
+              @click="navigateTo('post')"
+              shadow="hover"
+              :body-style="{ padding: '0px' }"
+            >
               <div class="grid-content grid-con-3">
-                <el-icon class="grid-con-icon"><Goods /></el-icon>
+                <el-icon class="grid-con-icon"><Document /></el-icon>
                 <div class="grid-cont-right">
-                  <div class="grid-num">5000</div>
-                  <div>商品数量</div>
+                  <div class="grid-num">20</div>
+                  <div>帖子数量</div>
                 </div>
               </div>
             </el-card>
@@ -101,26 +113,14 @@
         </el-card>
       </el-col>
     </el-row>
-    <!-- <el-row :gutter="20">
-      <el-col :span="12">
-        <el-card shadow="hover">
-          <schart ref="bar" class="schart" canvasId="bar" :options="options"></schart>
-        </el-card>
-      </el-col>
-      <el-col :span="12">
-        <el-card shadow="hover">
-          <schart ref="line" class="schart" canvasId="line" :options="options2"></schart>
-        </el-card>
-      </el-col>
-    </el-row> -->
   </div>
 </template>
 
 <script setup name="dashboard">
-// import Schart from 'vue-schart'
 import { reactive } from 'vue'
-// import imgurl from '../assets/img/img.jpg'
 import imgurl from '../assets/img/img.jpg'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 const name = localStorage.getItem('ms_username')
 const role = name === 'admin' ? '超级管理员' : '普通用户'
@@ -167,6 +167,9 @@ const options2 = {
       data: [74, 118, 200, 235, 90],
     },
   ],
+}
+const navigateTo = (routeName) => {
+  router.push({ name: routeName })
 }
 const todoList = reactive([
   {
@@ -237,11 +240,11 @@ const todoList = reactive([
 }
 
 .grid-con-2 .grid-con-icon {
-  background: rgb(100, 213, 114);
+  background: rgb(233, 13, 13);
 }
 
 .grid-con-2 .grid-num {
-  color: rgb(100, 213, 114);
+  color: rgb(233, 13, 13);
 }
 
 .grid-con-3 .grid-con-icon {

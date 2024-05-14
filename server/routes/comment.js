@@ -16,7 +16,7 @@ router.post('/', async (req, res, next) => {
     res.status(500).json({ message: 'Internal server error' })
   }
 })
-// 添加 POST 请求，用于添加h回复
+// 添加 POST 请求，用于添加回复
 router.post('/reply', async (req, res, next) => {
   const { postId, openId, username, text, reply_id, parent_id, reply_name } = req.body
 
